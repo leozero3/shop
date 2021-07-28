@@ -7,12 +7,14 @@ class CartItem {
   final String title;
   final int quantity;
   final double price;
+  final String productId;
 
-  CartItem({
+  CartItem( {
     @required this.id,
     @required this.title,
     @required this.quantity,
     @required this.price,
+    @required this.productId,
   });
 }
 
@@ -35,7 +37,7 @@ class Cart with ChangeNotifier {
     return total;
   }
 
-  addItem(Product product) {
+  void addItem(Product product) {
     if (_items.containsKey(product.id)) {
       _items.update(product.id, (existingItem) {
         return CartItem(
@@ -43,6 +45,7 @@ class Cart with ChangeNotifier {
           title: existingItem.title,
           quantity: existingItem.quantity + 1,
           price: existingItem.price,
+          productId: product.id,
         );
       });
     } else {
@@ -53,9 +56,15 @@ class Cart with ChangeNotifier {
           title: product.title,
           quantity: 1,
           price: product.price,
+          productId: product.id,
         ),
       );
     }
+    notifyListeners();
+  }
+
+  void removeItem(String productId){
+    _items.remove(productId);
     notifyListeners();
   }
 }
